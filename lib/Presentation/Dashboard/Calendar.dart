@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'Settings/SettingMenu.dart';
+import 'SettingMenu.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'Progress.dart';
 

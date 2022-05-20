@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:self_task_student/View/Settings/Account/ChangePassword.dart';
 import 'package:self_task_student/View/Settings/Account/ProfileEdit.dart';
-import 'package:self_task_student/View/Settings/Manage%20Subject/SubjectList.dart';
+import 'package:self_task_student/Presentation/Manage%20Subject/SubjectList.dart';
+// import 'package:self_task_student/View/Settings/Manage%20Subject/SubjectList.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 class SettingMenu extends StatefulWidget {

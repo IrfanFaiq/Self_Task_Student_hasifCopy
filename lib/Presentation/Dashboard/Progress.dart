@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Progress extends StatefulWidget {
@@ -8,12 +9,14 @@ class Progress extends StatefulWidget {
 }
 
 class _ProgressScreen extends State<Progress> {
+  final user = FirebaseAuth.instance.currentUser!;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: Text('Class Progression'),
+        title: Text('${user.uid}'),
+        //Text('Class Progression'),
         centerTitle: true,
         backgroundColor: Colors.green,
       ),

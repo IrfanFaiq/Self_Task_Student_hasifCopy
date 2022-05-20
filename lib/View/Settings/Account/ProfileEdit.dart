@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:self_task_student/View/Home.dart';
+import 'package:self_task_student/Presentation/Dashboard/Home.dart';
 
 class ProfileEdit extends StatefulWidget {
   const ProfileEdit({Key? key}) : super(key: key);

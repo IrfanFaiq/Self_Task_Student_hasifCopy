@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'SettingMenu.dart';
 import 'Calendar.dart';
 import 'Progress.dart';
-import 'Settings/SettingMenu.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);

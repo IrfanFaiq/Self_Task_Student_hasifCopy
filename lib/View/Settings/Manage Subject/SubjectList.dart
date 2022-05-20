@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:self_task_student/View/Settings/Manage%20Subject/AddSubject.dart';
+import 'package:self_task_student/Presentation/Manage%20Subject/AddSubject.dart';
 import 'package:self_task_student/View/Settings/Manage%20Subject/CourseMenu.dart';
 import 'package:settings_ui/settings_ui.dart';
 
