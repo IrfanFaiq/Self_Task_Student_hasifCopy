@@ -1,6 +1,10 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:self_task_student/Bloc/Manage%20User/user_bloc.dart';
+import 'package:self_task_student/Data/Database/Firebase/Model/UserModel.dart';
+import 'package:self_task_student/Data/Database/Firebase/Repository/UserRepository.dart';
 import 'package:self_task_student/Presentation/Dashboard/Home.dart';
 
 import '../../Bloc/Authenticate/auth_bloc.dart';
@@ -37,9 +41,28 @@ class _Register extends State<Register> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: <Color>[Colors.blue, Colors.green]),
+          ),
+        ),
         title: Text('Register'),
         centerTitle: true,
-        backgroundColor: Colors.green,
+        actions: <Widget>[
+          TextButton(
+            style: TextButton.styleFrom(
+              primary: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => Login()));
+            },
+            child: const Text("Login"),
+          )
+        ],
       ),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
@@ -65,67 +88,76 @@ class _Register extends State<Register> {
           if (state is UnAuthenticated) {
             // Displaying the sign up form if the user is not authenticated
             return Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Sign Up",
-                      style: TextStyle(
-                        fontSize: 38,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 18,
-                    ),
-                    Center(
-                      child: Form(
-                        key: _formKey,
-                        child: Column(
-                          children: [
-                            _email(),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            _password(),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.7,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  _createAccountWithEmailAndPassword(context);
-                                },
-                                child: const Text('Sign Up'),
-                              ),
-                            )
-                          ],
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "Sign Up",
+                        style: TextStyle(
+                          fontSize: 38,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    const Text("Already have an account?"),
-                    OutlinedButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => Login()),
-                        );
-                      },
-                      child: const Text("Sign In"),
-                    ),
-                    const Text("Or"),
-                    IconButton(
-                      onPressed: () {},
-                      icon: Image.network(
-                        "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1200px-Google_%22G%22_Logo.svg.png",
-                        height: 30,
-                        width: 30,
+                      const SizedBox(
+                        height: 18,
                       ),
-                    ),
-                  ],
+                      Center(
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              _email(),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              _password(),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              _rePassword(),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              _fullName(),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              _phoneNumber(),
+                              const SizedBox(
+                                height: 100,
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.7,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    UserRepository userRepository = UserRepository();
+                                    UserModel userModel = UserModel(
+                                      fullName: _fullNameController.text,
+                                      email: "${_emailController.text.toLowerCase()}@student.ump.edu.my",
+                                      pNumber: _phoneNumberController.text,
+                                      matrixId: _emailController.text.toUpperCase(),
+                                    );
+                                    userRepository.addUser(userModel, "${_emailController.text.toLowerCase()}@student.ump.edu.my");
+                                    _createAccountWithEmailAndPassword(context);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.green,
+                                      fixedSize: const Size(300, 60),
+                                      shape:
+                                      RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
+                                  child: const Text('Sign Up'),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+
+                    ],
+                  ),
                 ),
               ),
             );
@@ -158,6 +190,11 @@ class _Register extends State<Register> {
   Widget _fullName() {
     return TextFormField(
       controller: _fullNameController,
+      validator: (value){
+        if(value == null || value.isEmpty){
+          return "Enter your Full Name";
+        }
+      },
       decoration: InputDecoration(
         hintText: 'Full Name',
       ),
@@ -167,14 +204,17 @@ class _Register extends State<Register> {
   Widget _email() {
     return TextFormField(
       controller: _emailController,
-      decoration: InputDecoration(
-        hintText: 'Email',
+      decoration: const InputDecoration(
+        suffixText: '@student.ump.edu.my',
+        hintText: "Email / Student ID"
       ),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (value) {
-        return value != null && !EmailValidator.validate(value)
-            ? 'Enter a valid email'
-            : null;
+        if (value == null || value.isEmpty) {
+          return 'Enter your Student ID';
+        }
+
+        return null;
       },
     );
   }
@@ -182,6 +222,16 @@ class _Register extends State<Register> {
   Widget _phoneNumber() {
     return TextFormField(
       controller: _phoneNumberController,
+      validator: (value){
+        String patttern = r'(^(?:[+0]9)?[0-9]{10,12}$)';
+        RegExp regExp = RegExp(patttern);
+        if(value == null || value.isEmpty){
+          return "Enter your phone number";
+        }
+        else if (!regExp.hasMatch(value)) {
+          return 'Please enter valid phone number';
+        }
+      },
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         hintText: 'Phone number',
@@ -218,6 +268,12 @@ class _Register extends State<Register> {
   Widget _rePassword() {
     return TextFormField(
       controller: _rePasswordController,
+      validator: (value){
+        if(value == null || value.isEmpty){
+          return "Enter your password";
+        }
+        return _passwordController.text == value ? null : "The password is not the same";
+      },
       obscureText: true,
       decoration: InputDecoration(
         hintText: 'Re-Password',
@@ -244,10 +300,11 @@ class _Register extends State<Register> {
     if (_formKey.currentState!.validate()) {
       BlocProvider.of<AuthBloc>(context).add(
         SignUpRequested(
-          _emailController.text,
+          "${_emailController.text}@student.ump.edu.my",
           _passwordController.text,
         ),
       );
+
     }
   }
 }

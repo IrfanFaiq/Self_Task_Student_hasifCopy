@@ -2,6 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
+import '../../Data/Database/Firebase/Model/UserModel.dart';
+import '../../Data/Database/Firebase/Repository/UserRepository.dart';
 import '../../Data/Database/Firebase/Repository/auth_repository.dart';
 
 part 'auth_event.dart';
@@ -11,6 +13,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
   AuthBloc({required this.authRepository}) : super(UnAuthenticated()) {
     // When User Presses the SignIn Button, we will send the SignInRequested Event to the AuthBloc to handle it and emit the Authenticated State if the user is authenticated
+    final UserRepository  userRepository = UserRepository();
     on<SignInRequested>((event, emit) async {
       emit(Loading());
       try {
@@ -50,6 +53,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(Loading());
       await authRepository.signOut();
       emit(UnAuthenticated());
+    });
+
+    on<CreateUserAccount>((event, emit) async{
+      await userRepository.addUser(event.userModel, event.email);
     });
   }
 }

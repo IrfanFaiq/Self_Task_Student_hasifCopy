@@ -18,15 +18,19 @@ class UserCourseProvider {
     return _userCourseInstance.getSpecificUserCourseData(id);
   }
 
-  Future<int> saveData(UserCourseModel) {
-    return _userCourseInstance.add(UserCourseModel);
+  Future<int> saveCourseData(UserCourseModel userCourseModel) {
+    return _userCourseInstance.addCourse(userCourseModel);
   }
 
-  Future<int> updateData(UserCourseModel) {
-    return _userCourseInstance.update(UserCourseModel);
+  Future<int> updateData(UserCourseModel userCourseModel) {
+    return _userCourseInstance.update(userCourseModel);
   }
 
   Future<int> deleteData(int id) {
     return _userCourseInstance.delete(id);
+  }
+
+  Future<int> updatePercentage(int courseId){
+    return _userCourseInstance.percentageCalc(courseId);
   }
 }

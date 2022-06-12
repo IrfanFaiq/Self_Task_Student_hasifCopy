@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:self_task_student/Bloc/Authenticate/auth_bloc.dart';
 
 import '../Dashboard/Home.dart';
+import '../Widgets/curveWidget.dart';
 import 'Register.dart';
 
 class Login extends StatefulWidget {
@@ -18,24 +19,29 @@ class _Login extends State<Login> {
   final _passwordController = TextEditingController();
 
   @override
+
+
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Login'),
         centerTitle: true,
+        elevation: 0,
         actions: <Widget>[
           TextButton(
             style: TextButton.styleFrom(
               primary: Colors.white,
             ),
             onPressed: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Register()));
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (context) => const Register()));
             },
             child: const Text("Register"),
           )
         ],
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.transparent,
+
       ),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
@@ -56,61 +62,120 @@ class _Login extends State<Login> {
             );
           }
           if (state is UnAuthenticated) {
-            return Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        "Sign In",
-                        style: TextStyle(
-                          fontSize: 38,
-                          fontWeight: FontWeight.bold,
-                        ),
+            return Stack(
+              children: [
+                CurveWidget(
+                  //call from widget
+
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                      begin: Alignment.topRight,
+                        end: Alignment.bottomLeft,
+                        colors: [
+                          Colors.blue,
+                          Colors.green,
+                        ],
                       ),
-                      const SizedBox(
-                        height: 18,
-                      ),
-                      Center(
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              _usernameField(),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              _passwordField(),
-                              const SizedBox(
-                                height: 12,
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.7,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    _authenticateWithEmailAndPassword(context);
-                                  },
-                                  child: const Text('Sign In'),
-                                ),
-                              )
-                            ],
+                    ),
+                    width: double.infinity,
+                    height: MediaQuery.of(context).size.height * 0.65,
+                    // color: const Color.fromARGB(255, 4, 199, 199),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(top: 170),
+                          child: const Text(
+                            'Sign In',
+                            style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
                           ),
                         ),
-                      ),
-                      const Text("Don't have an account?"),
-                      OutlinedButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Register()),
-                          );
-                        },
-                        child: const Text("Sign Up"),
-                      )
-                    ]),
-              ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 50),
+                          child: Container(
+                            // padding: const EdgeInsets.only(bottom: 310),
+                            height: 169,
+                            width: 169,
+                            // decoration: const BoxDecoration(
+                            //     image: DecorationImage(
+                            //         image:
+                            //         AssetImage('assets/doctor.png'),
+                            //         fit: BoxFit.fill)
+                            // ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            height: 18,
+                          ),
+                          Center(
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                children: [
+                                  _usernameField(),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  _passwordField(),
+                                  const SizedBox(
+                                    height: 100,
+                                  ),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.7,
+                                    child: Material(
+                                      elevation: 8,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                      child: Container(
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.all(Radius.circular(25)),
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topRight,
+                                            end: Alignment.bottomLeft,
+                                            colors: [
+                                              Colors.green,
+                                              Colors.blue,
+                                            ],
+                                          ),
+                                        ),
+                                        child:ElevatedButton(
+                                          onPressed: () {
+                                            _authenticateWithEmailAndPassword(context);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                              elevation: 0,
+                                              primary: Colors.transparent,
+                                              fixedSize: const Size(300, 60),
+                                              shape:
+                                              RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
+                                          child: const Text('Sign In'),
+                                        )
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+
+                        ]),
+                  ),
+                ),
+              ],
             );
           }
           return Container();
@@ -122,10 +187,14 @@ class _Login extends State<Login> {
   Widget _usernameField() {
     return TextFormField(
       controller: _emailController,
-      decoration: InputDecoration(
+      style: TextStyle(
+        color: Colors.white,
+      ),
+      decoration: const InputDecoration(
         //hintText: 'Username',
         hintText: 'email',
-        icon: Icon(Icons.person),
+        hintStyle: TextStyle(color: Colors.white),
+        icon: Icon(Icons.person, color: Colors.white,),
       ),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (value) {
@@ -140,8 +209,11 @@ class _Login extends State<Login> {
     return TextFormField(
       controller: _passwordController,
       obscureText: true,
+      style: TextStyle(
+        color: Colors.white,
+      ),
       decoration:
-          InputDecoration(hintText: 'password', icon: Icon(Icons.security)),
+          const InputDecoration(hintStyle: TextStyle(color: Colors.white),hintText: 'password', icon: Icon(Icons.security, color: Colors.white,)),
     );
   }
 
@@ -149,14 +221,14 @@ class _Login extends State<Login> {
     return ElevatedButton(
       onPressed: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Home()));
+            context, MaterialPageRoute(builder: (context) => const Home()));
       },
       style: ElevatedButton.styleFrom(
           primary: Colors.green,
           fixedSize: const Size(300, 60),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(50))),
-      child: Text('Login'),
+      child: const Text('Login'),
     );
   }
 

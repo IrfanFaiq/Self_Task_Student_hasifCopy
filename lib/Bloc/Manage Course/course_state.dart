@@ -26,14 +26,13 @@ class GetSpecificLoad extends CourseState{
   const GetSpecificLoad(this.model);
 }
 
-//Create
-class CreateLoad extends CourseState{}
-
 //Update
 class UpdateLoad extends CourseState{
   final UserCourseModel model;
   const UpdateLoad(this.model);
 }
 
-//Delete
-class DeleteLoad extends CourseState{}
+class CourseJsonState extends CourseState{
+  final List<CourseListModel> model;
+  const CourseJsonState(this.model);
+}

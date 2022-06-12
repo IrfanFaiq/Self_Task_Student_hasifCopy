@@ -12,10 +12,6 @@ class GetAllCourse extends CourseEvent {
   const GetAllCourse(this.userId);
 }
 
-class GetAllUserCourse extends CourseEvent {
-  final String userId;
-  const GetAllUserCourse(this.userId);
-}
 
 class GetSpecificUserCourse extends CourseEvent {
   final int userCourseId;
@@ -35,4 +31,12 @@ class UpdateUserCourseData extends CourseEvent {
 class DeleteUserCourseData extends CourseEvent {
   final int userCourseId;
   const DeleteUserCourseData(this.userCourseId);
+}
+
+class ListCourseJson extends CourseEvent{
+}
+
+class UpdateWorkPercentage extends CourseEvent{
+  final int courseId;
+  const UpdateWorkPercentage(this.courseId);
 }
